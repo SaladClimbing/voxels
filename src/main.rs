@@ -1,4 +1,5 @@
 #![allow(non_snake_case)]
+#![allow(unused_imports)]
 
 use bevy::{
     pbr::wireframe::{NoWireframe, Wireframe, WireframeColor, WireframeConfig, WireframePlugin},
@@ -9,6 +10,8 @@ use bevy::{
         RenderPlugin,
     },
 };
+
+use noise::{NoiseFn, Perlin, Seedable};
 
 // NOTE
 // I don't know what this does entirely
@@ -29,6 +32,7 @@ fn setup_camera(mut commands: Commands) {
     ));
 }
 
+#[allow(dead_code)]
 fn plate(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
@@ -48,6 +52,7 @@ fn plate(
     });
 }
 
+#[allow(dead_code)]
 fn demo_cube(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
@@ -69,8 +74,10 @@ fn demo_cube_plane(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>
 ) {
+    let perlin = Perlin::new(1);
     for i in 0..10 {
         for j in 0..10 {
+            println!("{}", perlin.get([-i as f64 + 0.5, -j as f64 + 0.5]));
             commands.spawn((PbrBundle {
                 mesh: meshes.add(Cuboid::new(1.0, 1.0, 1.0)),
                 material: materials.add(StandardMaterial {
@@ -78,7 +85,7 @@ fn demo_cube_plane(
                     alpha_mode: AlphaMode::Mask(0.5),
                     ..default()
                 }),
-                transform: Transform::from_xyz(-i as f32, 0.0, -j as f32),
+                transform: Transform::from_xyz(-i as f32, perlin.get([-i as f64 + 0.5, -j as f64 + 0.5]) as f32 * 10.0, -j as f32),
                 ..default()
             },
                 Wireframe,
@@ -98,7 +105,7 @@ fn main() {
                 }),
                 ..default()
             }),
-        WireframePlugin,
+            WireframePlugin,
         ))
         .add_systems(Startup, setup_camera)
         // .add_systems(Startup, plate)
