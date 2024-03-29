@@ -59,9 +59,33 @@ fn demo_cube(
         material: materials.add(Color::BLUE),
         ..default()
     },
-    Wireframe,
-    WireframeColor { color: Color::LIME_GREEN},
+        Wireframe,
+        WireframeColor { color: Color::LIME_GREEN },
     ));
+}
+
+fn demo_cube_plane(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>
+) {
+    for i in 0..10 {
+        for j in 0..10 {
+            commands.spawn((PbrBundle {
+                mesh: meshes.add(Cuboid::new(1.0, 1.0, 1.0)),
+                material: materials.add(StandardMaterial {
+                    base_color: Color::rgba(0.2, 0.7, 0.1, 0.0),
+                    alpha_mode: AlphaMode::Mask(0.5),
+                    ..default()
+                }),
+                transform: Transform::from_xyz(-i as f32, 0.0, -j as f32),
+                ..default()
+            },
+                Wireframe,
+                WireframeColor { color: Color::LIME_GREEN },
+            ));
+        }
+    }
 }
 
 fn main() {
@@ -77,7 +101,7 @@ fn main() {
         WireframePlugin,
         ))
         .add_systems(Startup, setup_camera)
-        .add_systems(Startup, plate)
-        .add_systems(Startup, demo_cube)
+        // .add_systems(Startup, plate)
+        .add_systems(Startup, demo_cube_plane)
         .run();
 }
