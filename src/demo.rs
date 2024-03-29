@@ -63,7 +63,7 @@ pub fn demo_cube_plane(
                 PbrBundle {
                     mesh: meshes.add(Cuboid::new(1.0, 1.0, 1.0)),
                     material: materials.add(StandardMaterial {
-                        base_color: Color::rgba(0.2, 0.7, 0.1, 0.0),
+                        base_color: Color::rgba(0.2, 0.7, 0.1, 1.0),
                         alpha_mode: AlphaMode::Mask(0.5),
                         ..default()
                     }),
@@ -74,10 +74,10 @@ pub fn demo_cube_plane(
                     ),
                     ..default()
                 },
-                Wireframe,
-                WireframeColor {
-                    color: Color::LIME_GREEN,
-                },
+                // Wireframe,
+                // WireframeColor {
+                //     color: Color::LIME_GREEN,
+                // },
             ));
         }
     }
