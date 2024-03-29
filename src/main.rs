@@ -1,6 +1,14 @@
 #![allow(non_snake_case)]
 
-use bevy::{a11y::accesskit::Point, pbr, prelude::*};
+use bevy::{
+    pbr::wireframe::{NoWireframe, Wireframe, WireframeColor, WireframeConfig, WireframePlugin},
+    prelude::*,
+    render::{
+        render_resource::WgpuFeatures,
+        settings::{RenderCreation, WgpuSettings},
+        RenderPlugin,
+    },
+};
 
 // NOTE
 // I don't know what this does entirely
@@ -21,7 +29,7 @@ fn setup_camera(mut commands: Commands) {
     ));
 }
 
-fn demo_cube(
+fn plate(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>
@@ -34,24 +42,42 @@ fn demo_cube(
         ..default()
     });
 
-    // Cube
-    commands.spawn(PbrBundle {
-        mesh: meshes.add(Cuboid::new(1.0, 1.0, 1.0)),
-        material: materials.add(Color::BLUE),
-        ..default()
-    });
-
     commands.spawn(PointLightBundle {
         transform: Transform::from_xyz(5.0, 5.0, 5.0),
         ..default()
     });
+}
 
+fn demo_cube(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>
+) {
+    // Cube
+    commands.spawn((PbrBundle {
+        mesh: meshes.add(Cuboid::new(1.0, 1.0, 1.0)),
+        material: materials.add(Color::BLUE),
+        ..default()
+    },
+    Wireframe,
+    WireframeColor { color: Color::LIME_GREEN},
+    ));
 }
 
 fn main() {
     App::new()
-        .add_plugins(DefaultPlugins)
+        .add_plugins((
+            DefaultPlugins.set(RenderPlugin {
+                render_creation: RenderCreation::Automatic(WgpuSettings {
+                    features: WgpuFeatures::POLYGON_MODE_LINE,
+                    ..default()
+                }),
+                ..default()
+            }),
+        WireframePlugin,
+        ))
         .add_systems(Startup, setup_camera)
+        .add_systems(Startup, plate)
         .add_systems(Startup, demo_cube)
         .run();
 }
