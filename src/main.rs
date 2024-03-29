@@ -24,8 +24,7 @@ struct MyCameraMarker;
 fn setup_camera(mut commands: Commands) {
     commands.spawn((
         Camera3dBundle {
-            transform: Transform::from_xyz(10.0, 12.0, 16.0)
-                .looking_at(Vec3::ZERO, Vec3::Y),
+            transform: Transform::from_xyz(10.0, 12.0, 16.0).looking_at(Vec3::ZERO, Vec3::Y),
             ..default()
         },
         MyCameraMarker,
@@ -36,7 +35,7 @@ fn setup_camera(mut commands: Commands) {
 fn plate(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>
+    mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
     // Circle base
     commands.spawn(PbrBundle {
@@ -56,40 +55,50 @@ fn plate(
 fn demo_cube(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>
+    mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
     // Cube
-    commands.spawn((PbrBundle {
-        mesh: meshes.add(Cuboid::new(1.0, 1.0, 1.0)),
-        material: materials.add(Color::BLUE),
-        ..default()
-    },
+    commands.spawn((
+        PbrBundle {
+            mesh: meshes.add(Cuboid::new(1.0, 1.0, 1.0)),
+            material: materials.add(Color::BLUE),
+            ..default()
+        },
         Wireframe,
-        WireframeColor { color: Color::LIME_GREEN },
+        WireframeColor {
+            color: Color::LIME_GREEN,
+        },
     ));
 }
 
 fn demo_cube_plane(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>
+    mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
     let perlin = Perlin::new(1);
     for i in 0..10 {
         for j in 0..10 {
             println!("{}", perlin.get([-i as f64 + 0.5, -j as f64 + 0.5]));
-            commands.spawn((PbrBundle {
-                mesh: meshes.add(Cuboid::new(1.0, 1.0, 1.0)),
-                material: materials.add(StandardMaterial {
-                    base_color: Color::rgba(0.2, 0.7, 0.1, 0.0),
-                    alpha_mode: AlphaMode::Mask(0.5),
+            commands.spawn((
+                PbrBundle {
+                    mesh: meshes.add(Cuboid::new(1.0, 1.0, 1.0)),
+                    material: materials.add(StandardMaterial {
+                        base_color: Color::rgba(0.2, 0.7, 0.1, 0.0),
+                        alpha_mode: AlphaMode::Mask(0.5),
+                        ..default()
+                    }),
+                    transform: Transform::from_xyz(
+                        -i as f32,
+                        perlin.get([-i as f64 + 0.5, -j as f64 + 0.5]) as f32 * 10.0,
+                        -j as f32,
+                    ),
                     ..default()
-                }),
-                transform: Transform::from_xyz(-i as f32, perlin.get([-i as f64 + 0.5, -j as f64 + 0.5]) as f32 * 10.0, -j as f32),
-                ..default()
-            },
+                },
                 Wireframe,
-                WireframeColor { color: Color::LIME_GREEN },
+                WireframeColor {
+                    color: Color::LIME_GREEN,
+                },
             ));
         }
     }
