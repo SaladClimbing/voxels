@@ -9,10 +9,17 @@ use bevy::{
         settings::{RenderCreation, WgpuSettings},
         RenderPlugin,
     },
+    transform::commands,
 };
 
 mod camera;
 mod demo;
+
+fn light(mut commands: Commands) {
+    commands.spawn(DirectionalLightBundle { 
+        ..default()
+    });
+}
 
 fn main() {
     App::new()
@@ -27,7 +34,7 @@ fn main() {
             WireframePlugin,
         ))
         .add_systems(Startup, camera::setup_camera)
-        // .add_systems(Startup, plate)
+        .add_systems(Startup, light)
         .add_systems(Startup, demo::demo_cube_plane)
         .run();
 }
