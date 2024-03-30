@@ -11,6 +11,7 @@ use bevy::{
 };
 
 use noise::{NoiseFn, Perlin, Seedable};
+use rand::prelude::*;
 
 pub fn plate(
     mut commands: Commands,
@@ -56,6 +57,7 @@ pub fn demo_cube_plane(
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
     let perlin = Perlin::new(1);
+    let mut rng = rand::thread_rng();
     for i in 0..10 {
         for j in 0..10 {
             println!("{}", perlin.get([-i as f64 + 0.5, -j as f64 + 0.5]));
@@ -63,13 +65,13 @@ pub fn demo_cube_plane(
                 PbrBundle {
                     mesh: meshes.add(Cuboid::new(1.0, 1.0, 1.0)),
                     material: materials.add(StandardMaterial {
-                        base_color: Color::rgba(0.2, 0.7, 0.1, 1.0),
+                        base_color: Color::rgba(rng.gen(), rng.gen(), rng.gen(), 1.0),
                         alpha_mode: AlphaMode::Mask(0.5),
                         ..default()
                     }),
                     transform: Transform::from_xyz(
                         -i as f32,
-                        perlin.get([-i as f64 + 0.5, -j as f64 + 0.5]) as f32 * 10.0,
+                        perlin.get([-i as f64 + 0.5, -j as f64 + 0.5]) as f32,
                         -j as f32,
                     ),
                     ..default()
